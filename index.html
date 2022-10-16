@@ -1,0 +1,78 @@
+<html lang="en">
+<body>
+<!-- connect form -->
+<form name="connect" id="connect">
+  <label>
+    WebSocket Api Url (e.g. wss://...):
+    <input type="text" name="apiUrl">
+  </label>
+  <input type="submit" value="Connect">
+  <div id="connectionStatus">Disconnected</div>
+</form>
+
+<!-- message form -->
+<form name="publish" id="publish">
+  <label>
+    Message:
+    <input type="text" name="message">
+  </label>
+  <input type="submit" value="Send">
+</form>
+
+<!-- div with messages -->
+<div id="messages"></div>
+
+<script type="text/javascript">
+  let socket = null;
+
+  document.forms.connect.onsubmit = function (e) {
+    e.preventDefault();
+
+    if (socket === null) {
+      const apiUrl = this.apiUrl.value;
+      console.log(`Connecting to ${apiUrl}`);
+      socket = new WebSocket(apiUrl);
+    } else {
+      socket.close();
+    }
+
+    socket.onopen = function () {
+      console.log('Socket connection open.');
+      document.getElementById('connectionStatus').innerText = 'Connected!';
+      document.querySelector('#connect input[type=submit]').value = 'Disconnect';
+    };
+
+    // message received - show the message in div#messages
+    socket.onmessage = function (event) {
+      const message = event.data;
+      const messageElem = document.createElement('div');
+      messageElem.textContent = message;
+      document.getElementById('messages').prepend(messageElem);
+    }
+
+    socket.onclose = function (event) {
+      if (!event.wasClean) {
+        // e.g. server process killed or network down
+        // event.code is usually 1006 in this case
+        alert('[close] Connection died');
+      }
+      document.getElementById('connectionStatus').innerText = 'Disconnected';
+      document.querySelector('#connect input[type=submit]').value = 'Connect';
+    };
+
+    socket.onerror = function (error) {
+      alert(`[error] ${error.message}`);
+    };
+  };
+
+  // send message from the form
+  document.forms.publish.onsubmit = function (e) {
+    e.preventDefault();
+
+    const message = this.message.value;
+    const jsonValue = JSON.stringify({ action: 'sendmessage', message });
+    socket.send(jsonValue);
+  };
+</script>
+</body>
+</html>
