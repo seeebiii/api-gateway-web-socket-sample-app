@@ -6,7 +6,7 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-chat-
 
 ## How to use
 
-1. Install CDK
+1. Install AWS CDK
 2. Deploy infrastructure: `cd infrastructure && cdk deploy` -> note `WebSocketApi` output
 3. Open [`index.html`](index.html) in two browser tabs
 4. Enter WebSocket Api Url and connect in both tabs

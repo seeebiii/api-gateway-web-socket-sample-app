@@ -7,6 +7,7 @@ Deploys the infrastructure for this WebSocket sample app.
 - a Lambda Function to remove connections (`disconnect-handler`)
 - a Lambda Function to serve the default route (`default-handler`)
 - a Lambda Function to send a message to other connections (`sendmessage-handler`)
+- a WebSocket API to provide `wss:` endpoint (`WebSocketApi`)
 
 ## Useful commands
 
